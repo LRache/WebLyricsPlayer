@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import "./Player.css"
 
 /**
  *
@@ -8,10 +9,14 @@ import {useEffect, useRef, useState} from "react";
  */
 
 function Player({configure}) {
-    const audioPlayer = useRef(new Audio(configure.audioPath))
-    const [isPlaying, setIsPlaying] = useState(false)
+    const audioPlayer = useRef(new Audio(configure.audioPath));
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
+        // 判断是否加载成功
+        audioPlayer.current.addEventListener("error", () => {
+            alert("加载音频失败");
+        })
         audioPlayer.current.load();
     }, [])
 
@@ -25,11 +30,33 @@ function Player({configure}) {
         setIsPlaying(false);
     }
 
+    const playerStyle = {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: configure.width,
+        height: configure.height,
+    }
+
+    const backgroundImageStyle = {
+        backgroundImage: `url(${configure.coverPath})`,
+        backgroundSize: "100% 100%",
+        filter: "blur(60px)",
+
+        position: "absolute",
+        top: 0,
+        left: 0,
+
+        width:  configure.width,
+        height: configure.height,
+    }
+
     return (
-        <div>
-            <button onClick={() => {
+        <div style={playerStyle}>
+            <div style={backgroundImageStyle}></div>
+            <button className="play-button" onClick={() => {
                 if (isPlaying) pause_audio();
-                else play_audio()
+                else play_audio();
             }}>{isPlaying ? "Pause" : "Play"}</button>
         </div>
     )
