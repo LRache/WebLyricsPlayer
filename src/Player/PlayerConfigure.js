@@ -3,7 +3,11 @@ class PlayerConfigure {
     width = 0;
     audioPath= "";
     coverPath = "";
-    backgroundColor = "";
+    title = "";
+    subTitle = "";
+
+    coverRotatingCycle = 50000;
+
     constructor(audioPath) {
         this.audioPath = audioPath
     }
