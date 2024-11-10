@@ -11,27 +11,33 @@
 }
 
 .background-image {
-    background-size: 100% 100%;
-    filter: blur(60px);
-
     position: absolute;
     top:  0;
     left: 0;
+    width:  100%;
+    height: 100%;
+
+    background-size: 100% 100%;
+    filter: blur(60px);
 }
 
 .title-text {
     position: absolute;
     left: 50%;
-    color: white;
-    font-size: 42px;
-    font-weight: bold;
     transform: translate(-50%, -50%);
+
+    color: white;
+    font-weight: bold;
+    font-size: 5vh;
+    user-select: none;
 }
 
 .subtitle-text {
     position: absolute;
     left: 50%;
-    color: #d5d5d2;
-    font-size: 24px;
     transform: translate(-50%, -50%);
+
+    color: #d5d5d2;
+    font-size: 3vh;
+    user-select: none;
 }
