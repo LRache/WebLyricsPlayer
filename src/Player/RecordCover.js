@@ -6,7 +6,7 @@ const config = {
     arcCount: 15,
 };
 
-function RecordCover({size, top, left, imagePath, timer, cycle}) {
+function RecordCover({size, imagePath, timer, cycle}) {
     const canvasRef = useRef(null);
     const imageRef = useRef(new Image());
     const [imageLoadFinished, setImageLoadFinished] = useState(false);
@@ -86,14 +86,8 @@ function RecordCover({size, top, left, imagePath, timer, cycle}) {
         }
     }, [size, imageLoadFinished])
 
-    const style = {
-        position: "absolute",
-        top:  `${top}px`,
-        left: `${left}px`,
-    }
-
     return (
-        <canvas ref={canvasRef} width={size} height={size} style={style}></canvas>
+        <canvas ref={canvasRef} width={size} height={size} className="cover"></canvas>
     );
 }
 

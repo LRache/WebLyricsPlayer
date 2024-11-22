@@ -6,8 +6,48 @@
 
 .play-button {
     position: absolute;
-    top: 0;
-    left: 0;
+    background-image: url("/public/play.svg");
+    background-color: rgba(192, 192, 192, 0.3);
+    background-size: 50px 50px;
+    background-position-x: 15px;
+    background-position-y: 15px;
+    background-repeat: no-repeat;
+
+    top:  90%;
+    left: 10px;
+    width:  80px;
+    height: 80px;
+    border-width: 0;
+    border-radius: 40px;
+}
+
+.play-button:hover {
+    background-color: rgba(192, 192, 192, 0.9);
+}
+
+.pause-button {
+    position: absolute;
+    background-image: url("/public/pause.svg");
+    background-color: rgba(192, 192, 192, 0.5);
+    background-size: 50px 50px;
+    background-position-x: 15px;
+    background-position-y: 15px;
+    background-repeat: no-repeat;
+
+    top:  90%;
+    left: 10px;
+    width:  80px;
+    height: 80px;
+    border-width: 0;
+    border-radius: 40px;
+}
+
+.pause-button:hover {
+    background-color: rgba(192, 192, 192, 0.9);
+}
+
+.pause-button:active {
+    background-color: rgba(192, 192, 192, 0.3);
 }
 
 .background-image {
@@ -18,12 +58,13 @@
     height: 100%;
 
     background-size: 100% 100%;
-    filter: blur(60px);
+    filter: blur(60px) brightness(0.6);
 }
 
 .title-text {
     position: absolute;
-    left: 50%;
+    top : 70vh;
+    left: 25vw;
     transform: translate(-50%, -50%);
 
     color: white;
@@ -34,10 +75,20 @@
 
 .subtitle-text {
     position: absolute;
-    left: 50%;
+    top: 75vh;
+    left: 25vw;
     transform: translate(-50%, -50%);
 
     color: #d5d5d2;
     font-size: 3vh;
     user-select: none;
+}
+
+.cover {
+    position: absolute;
+    top:  40vh;
+    left: 25vw;
+    height: 50vh;
+    width:  50vh;
+    transform: translate(-50%, -50%);
 }

@@ -1,5 +1,5 @@
 class PlayerConfigure {
-    audioPath= "";
+    audioPath = "";
     coverPath = "";
 
     coverRotatingCycle = 50000;
@@ -9,10 +9,7 @@ class PlayerConfigure {
     title = "";
     subTitle = "";
     lyricsText = "";
-
-    constructor(audioPath) {
-        this.audioPath = audioPath
-    }
+    lyricsTextPosition = [];
 }
 
 export default PlayerConfigure;

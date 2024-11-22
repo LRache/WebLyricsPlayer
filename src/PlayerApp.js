@@ -1,25 +1,22 @@
-import Player from "./Player/Player";
+import Player, {LYRICS_TEXT_POSITION} from "./Player/Player";
 import PlayerConfigure from "./Player/PlayerConfigure";
 import {useEffect, useRef, useState} from "react";
 import {useParams} from 'react-router-dom';
 
 
 function PlayerApp() {
-    const configure = useRef(new PlayerConfigure("http://localhost:8080/music/audio?id=10"))
+    const configure = useRef(new PlayerConfigure());
     const [windowWidth, setWindowWidth] = useState(document.documentElement.clientWidth);
     const [windowHeight, setWindowHeight] = useState(document.documentElement.clientHeight);
     const [isReady, setIsReady] = useState(false);
     const [isError, setIsError] = useState(false);
     const params = useParams();
 
-    const lyrics = useRef("");
-    const title = useRef("");
-    const subTitle = useRef("");
-
     const id = params.id;
 
     async function load_lyrics() {
-        const response = await fetch(`http://localhost:8080/music/lyrics?id=${id}`).catch(() => {
+        console.log(process.env.REACT_APP_API_URL);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/music/lyrics?id=${id}`).catch(() => {
             throw new Error("fetch lyrics failed");
         });
         const ok = response.ok;
@@ -27,18 +24,29 @@ function PlayerApp() {
             throw new Error("fetch lyrics failed");
         }
         const config = await response.json();
-        lyrics.current = config.lyrics === undefined ? "" : config.lyrics;
+        console.log(config);
+        configure.current.lyricsText = config.lyrics === undefined ? "" : config.lyrics;
     }
 
     async function load_config() {
-        const response = await fetch(`http://localhost:8080/music/config?id=${id}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/music/config?id=${id}`);
         const ok = response.ok;
         if (!ok) {
             throw new Error("fetch config failed");
         }
-        const config = await response.json();
-        title.current = config.title;
-        subTitle.current = config.singer + " - " + config.album;
+        const configJson = await response.json();
+        configure.current.title = configJson.config.name;
+        configure.current.subTitle = configJson.config.singer + " - " + configJson.config.album;
+        document.title = configJson.config.name + " " + configJson.config.singer + " - " + configJson.config.album;
+        if (configJson.config.multilineLyrics) {
+            configure.current.BottomLyricsCount = 3;
+            configure.current.TopLyricsCount = 3;
+            configure.current.lyricsTextPosition = LYRICS_TEXT_POSITION[1];
+        } else {
+            configure.current.BottomLyricsCount = 4;
+            configure.current.TopLyricsCount = 4;
+            configure.current.lyricsTextPosition = LYRICS_TEXT_POSITION[0];
+        }
     }
 
     useEffect(() => {
@@ -46,7 +54,6 @@ function PlayerApp() {
             setWindowHeight(document.documentElement.clientHeight);
             setWindowWidth(document.documentElement.clientWidth);
         })
-        console.log(params);
 
         Promise.all([load_lyrics(), load_config()])
             .then(() => {
@@ -58,13 +65,16 @@ function PlayerApp() {
     }, []);
 
     // window width
-    configure.current.coverPath = "http://localhost:8080/music/cover?id=10";
-    configure.current.title = "葡萄成熟时";
-    configure.current.subTitle = "陈奕迅 - U87";
-    configure.current.lyricsText = lyrics.current;
+    configure.current.audioPath = `${process.env.REACT_APP_API_URL}/music/audio?id=${id}`;
+    configure.current.coverPath = `${process.env.REACT_APP_API_URL}/music/cover?id=${id}`;
 
     if (isError) {
-        return <div>OOPS,出错了</div>
+        return (
+            <div>
+                <div>OOPS,出错了</div>
+                <div>未找到id={id}的音乐</div>
+            </div>
+        )
     }
     return (
         <Player

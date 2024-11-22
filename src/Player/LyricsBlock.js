@@ -1,21 +1,21 @@
 import "./LyricsBlock.css"
 import {useEffect, useState} from "react";
 
-export function LyricsBlock({ text, top, selected }) {
+export function LyricsBlock({ text, top, selected, exit }) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
-            setIsMounted(true);
-        },  100);
-
+            setIsMounted(true);},  200);
     }, []);
 
     const className = selected
         ? "selected-lyrics-text"
-        : isMounted
-            ? "unselected-lyrics-text"
-            : "lyrics-text-nodisplay";
+        : exit
+            ? "lyrics-text-nodisplay"
+            : isMounted
+                ? "unselected-lyrics-text"
+                : "lyrics-text-nodisplay";
 
     return (
         <div

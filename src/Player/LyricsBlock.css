@@ -1,41 +1,48 @@
 .lyrics-text-nodisplay {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    left:  70vw;
+    width: 50vw;
+    transform: translate(-50%, -50%);
 
     color: #9ea09b;
     opacity: 0;
     font-size: 4vh;
     user-select: none;
+    text-align: center;
+    white-space: pre;
 
-    transition-duration: 1000ms;
+    transition-duration: 200ms;
     transition-timing-function: linear;
 }
 
 .unselected-lyrics-text {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    left:  calc(25vw + 25vh + 4vw + (100vw - (25vw + 25vh + 4vw)) / 2);
+    transform: translate(-50%, -50%);
 
     color: #9ea09b;
     opacity: 1;
     font-size: 4vh;
     user-select: none;
+    text-align: center;
+    white-space: pre;
 
     transition: opacity 500ms ease-in-out, top 200ms ease-in-out;
 }
 
 .selected-lyrics-text {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    left:  70vw;
+    width: 50vw;
+    transform: translate(-50%, -50%);
 
     color: white;
     font-weight: bold;
     opacity: 1;
     font-size: 4vh;
     user-select: none;
+    text-align: center;
+    white-space: pre;
 
-    transition-duration: 200ms;
-    transition-timing-function: linear;
+    transition: opacity 500ms ease-in-out, top 200ms ease-in-out;
 }

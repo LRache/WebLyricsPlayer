@@ -3,15 +3,28 @@ import "./Player.css"
 import RecordCover from "./RecordCover";
 import {LyricsBlock} from "./LyricsBlock";
 
-/**
- *
- * @param configure PlayerConfigure
- * @param width
- * @param height
- * @param ready
- * @returns {JSX.Element}
- * @constructor
- */
+export const LYRICS_TEXT_POSITION = [
+    [
+        "18vh",
+        "26vh",
+        "34vh",
+        "42vh",
+        "50vh",
+        "58vh",
+        "66vh",
+        "74vh",
+        "82vh",
+    ],
+    [
+        "14vh",
+        "26vh",
+        "38vh",
+        "50vh",
+        "62vh",
+        "74vh",
+        "86vh",
+    ]
+]
 
 function Player({configure, width, height, ready}) {
     const audioPlayer = useRef(new Audio());
@@ -32,6 +45,17 @@ function Player({configure, width, height, ready}) {
         let nextLyricsBlockList = [];
         const lyricsCount = configure.BottomLyricsCount + configure.TopLyricsCount + 1;
         const topLyricsIndex = currentLyricsIndex.current - configure.TopLyricsCount;
+        if (topLyricsIndex - 1 >= 0) {
+            nextLyricsBlockList.push(
+                <LyricsBlock
+                    text ={lyricsTextList.current[topLyricsIndex - 1].text}
+                    top = {lyricsTextPosition.current[0]}
+                    selected = {false}
+                    exit = {true}
+                    key = {topLyricsIndex - 1}
+                />
+            )
+        }
         for (let i = 0; i < lyricsCount; i++) {
             const index = topLyricsIndex + i;
             if (index >= 0 && index < lyricsTextList.current.length) {
@@ -41,6 +65,7 @@ function Player({configure, width, height, ready}) {
                         text = {lyricsText}
                         top  = {lyricsTextPosition.current[i]}
                         selected = {index === currentLyricsIndex.current}
+                        exit = {false}
                         key = {index}
                     />
                 )
@@ -81,9 +106,16 @@ function Player({configure, width, height, ready}) {
                 const seconds = parseInt(time[2]);
                 const milliseconds = parseInt(time[3]);
                 const text = line.replace(/\[(\d{2}):(\d{2})\.(\d{3})]/, "");
+                let ms = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
+                const left = ms % 30;
+                if (left <= 15) {
+                    ms -= left;
+                } else {
+                    ms += 30 - left;
+                }
                 return {
-                    time: minutes * 60 * 1000 + seconds * 1000 + milliseconds,
-                    text: text
+                    time: ms,
+                    text: text.replaceAll("\\n", "\n")
                 }
             }
             return null;
@@ -95,6 +127,9 @@ function Player({configure, width, height, ready}) {
             nextTriggerTime.current = lyricsTextList.current[0].time;
         }
         currentLyricsIndex.current = -1;
+
+        lyricsTextPosition.current = configure.lyricsTextPosition;
+
         update_lyrics_block();
     }
 
@@ -137,13 +172,6 @@ function Player({configure, width, height, ready}) {
     }, [isPlaying])
 
     useEffect(() => {
-        lyricsTextPosition.current = [
-            "60vh",
-            "68vh",
-            "76vh",
-            "84vh",
-            "92vh",
-        ];
         update_lyrics_block();
     }, [width, height])
 
@@ -164,11 +192,7 @@ function Player({configure, width, height, ready}) {
         }
     }, [timer]);
 
-    const recordSize = height * 0.4;
-    const recordLeft = width * 0.5 - recordSize / 2;
-    const recordTop  = height * 0.25 - recordSize / 2;
-    const titleTop = height * 0.5;
-    const subTitleTop = height * 0.55;
+    const recordSize = height * 0.5;
 
     return (
         <div
@@ -185,22 +209,19 @@ function Player({configure, width, height, ready}) {
 
             <RecordCover
                 size= {recordSize}
-                top = {recordTop}
-                left= {recordLeft}
                 imagePath = {configure.coverPath}
                 timer = {timer}
                 cycle = {configure.coverRotatingCycle}
+                className = "cover"
             />
 
             <div
-                style={{top: titleTop}}
                 className="title-text"
             >
                 {configure.title}
             </div>
 
             <div
-                style={{top: subTitleTop}}
                 className="subtitle-text"
             >
                 {configure.subTitle}
@@ -208,10 +229,10 @@ function Player({configure, width, height, ready}) {
 
             {lyricsBlockList}
 
-            <button className="play-button" onClick={() => {
+            <button className={isPlaying ? "pause-button" : "play-button"} onClick={() => {
                 if (isPlaying) pause_audio();
                 else play_audio();
-            }}>{isPlaying ? "Pause" : "Play"}</button>
+            }} />
         </div>
     )
 }
