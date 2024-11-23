@@ -75,6 +75,10 @@ function Player({configure, width, height, ready}) {
     }
 
     function play_audio() {
+        if (audioPlayer.current.readyState !== 4) {
+            alert("音频加载中，请稍后再试");
+            return;
+        }
         audioPlayer.current.play();
         setIsPlaying(true);
     }
