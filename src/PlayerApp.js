@@ -24,7 +24,6 @@ function PlayerApp() {
             throw new Error("fetch lyrics failed");
         }
         const config = await response.json();
-        console.log(config);
         configure.current.lyricsText = config.lyrics === undefined ? "" : config.lyrics;
     }
 
