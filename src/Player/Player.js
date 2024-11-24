@@ -75,10 +75,10 @@ function Player({configure, width, height, ready}) {
     }
 
     function play_audio() {
-        if (audioPlayer.current.readyState !== 4) {
-            alert("音频加载中，请稍后再试");
-            return;
-        }
+        // if (audioPlayer.current.readyState !== 4) {
+        //     alert("音频加载中，请稍后再试");
+        //     return;
+        // }
         audioPlayer.current.play();
         setIsPlaying(true);
     }
@@ -104,12 +104,12 @@ function Player({configure, width, height, ready}) {
 
     function load_lyrics() {
         lyricsTextList.current = configure.lyricsText.split("\n").map((line) => {
-            const time = line.match(/\[(\d{2}):(\d{2})\.(\d{3})]/);
+            const time = line.match(/\[(\d{2}):(\d{2})\.(\d{2,3})]/);
             if (time) {
                 const minutes = parseInt(time[1]);
                 const seconds = parseInt(time[2]);
-                const milliseconds = parseInt(time[3]);
-                const text = line.replace(/\[(\d{2}):(\d{2})\.(\d{3})]/, "");
+                const milliseconds = time[3].length === 3 ? parseInt(time[3]) : parseInt(time[3]) * 10;
+                const text = line.replace(/\[(\d{2}):(\d{2})\.(\d{2,3})]/, "");
                 let ms = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
                 const left = ms % 30;
                 if (left <= 15) {
@@ -139,6 +139,7 @@ function Player({configure, width, height, ready}) {
 
     function load_audio() {
         audioPlayer.current.src = configure.audioPath;
+        audioPlayer.current.preload = "auto";
         audioPlayer.current.load();
     }
 
@@ -148,7 +149,6 @@ function Player({configure, width, height, ready}) {
             alert("加载音频失败");
         })
         audioPlayer.current.addEventListener("ended", audio_ended);
-
     }, [])
 
     useEffect(() => {
