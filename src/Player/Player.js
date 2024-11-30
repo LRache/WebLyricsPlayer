@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import "./Player.css"
 import RecordCover from "./RecordCover";
 import {LyricsBlock} from "./LyricsBlock";
+import ProgressBar from "./ProgressBar";
 
 export const LYRICS_TEXT_POSITION = [
     [
@@ -26,9 +27,16 @@ export const LYRICS_TEXT_POSITION = [
     ]
 ]
 
+function seconds_to_time_string(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const seconds_remain = Math.floor(seconds % 60);
+    return `${minutes < 10 ? "0" + minutes : minutes}:${seconds_remain < 10 ? "0" + seconds_remain : seconds_remain}`;
+}
+
 function Player({configure, width, height, ready}) {
     const audioPlayer = useRef(new Audio());
     const [isPlaying, setIsPlaying] = useState(false);
+    const [loopPlaying, setLoopPlaying] = useState(false);
 
     // Timer
     const [timer, setTimer] = useState(0);
@@ -40,6 +48,9 @@ function Player({configure, width, height, ready}) {
     const currentLyricsIndex = useRef(-1);
     const lyricsTextList  = useRef([]);
     const [lyricsBlockList, setLyricsBlockList] = useState([]);
+
+    const [playerCurrent, setPlayerCurrent] = useState(0);
+    const [playerDuration, setPlayerDuration] = useState(0);
 
     function update_lyrics_block() {
         let nextLyricsBlockList = [];
@@ -74,33 +85,96 @@ function Player({configure, width, height, ready}) {
         setLyricsBlockList(nextLyricsBlockList.reverse());
     }
 
+    function set_lyrics_block_time(time) {
+        let index = -1;
+        for (let i = 0; i < lyricsTextList.current.length; i++) {
+            if (lyricsTextList.current[i].time > time) {
+                index = i - 1;
+                break;
+            }
+        }
+        currentLyricsIndex.current = index;
+        nextTriggerTime.current = lyricsTextList.current[index + 1].time;
+    }
+
     function play_audio() {
-        // if (audioPlayer.current.readyState !== 4) {
-        //     alert("音频加载中，请稍后再试");
-        //     return;
-        // }
         audioPlayer.current.play();
-        setIsPlaying(true);
     }
 
     function pause_audio() {
         audioPlayer.current.pause();
-        setIsPlaying(false);
     }
 
     function reset() {
         setTimer(0);
-        currentLyricsIndex.current = -1;
-        nextTriggerTime.current = lyricsTextList.current[0].time;
+        setPlayerCurrent(0);
+        audioPlayer.current.currentTime = 0;
+        set_lyrics_block_time(0);
         update_lyrics_block();
     }
 
-    function audio_ended() {
+    function set_current_time(time) {
+        audioPlayer.current.currentTime = time;
+        setTimer(time * 1000);
+        set_lyrics_block_time(time * 1000);
+        update_lyrics_block();
+    }
+
+    function event_audio_ended() {
         audioPlayer.current.pause();
         setIsPlaying(false);
         clearInterval(timerInterval.current);
         reset();
+        // console.log(loopPlaying)
+        if (loopPlaying) {
+            play_audio();
+        }
     }
+
+    function event_audio_error() {
+        alert("加载音频失败");
+    }
+
+    function event_audio_play() {
+        setIsPlaying(true);
+    }
+
+    function event_audio_pause() {
+        setIsPlaying(false);
+    }
+
+    function event_audio_durationchange() {
+        setPlayerDuration(audioPlayer.current.duration);
+    }
+
+    function event_audio_timeupdate() {
+        setPlayerCurrent(audioPlayer.current.currentTime);
+    }
+
+    useEffect(() => {
+        // 判断是否加载成功
+        audioPlayer.current.addEventListener("error", event_audio_error);
+        audioPlayer.current.addEventListener("play",  event_audio_play);
+        audioPlayer.current.addEventListener("pause", event_audio_pause);
+        audioPlayer.current.addEventListener("durationchange", event_audio_durationchange);
+        audioPlayer.current.addEventListener("timeupdate", event_audio_timeupdate);
+        audioPlayer.current.addEventListener("ended", event_audio_ended);
+
+        return () => {
+            audioPlayer.current.removeEventListener("error", event_audio_error);
+            audioPlayer.current.removeEventListener("play",  event_audio_play);
+            audioPlayer.current.removeEventListener("pause", event_audio_pause);
+            audioPlayer.current.removeEventListener("durationchange", event_audio_durationchange);
+            audioPlayer.current.removeEventListener("timeupdate", event_audio_timeupdate);
+            audioPlayer.current.removeEventListener("ended", event_audio_ended);
+        }
+    }, [
+        event_audio_play,
+        event_audio_pause,
+        event_audio_durationchange,
+        event_audio_timeupdate,
+        event_audio_ended
+    ])
 
     function load_lyrics() {
         lyricsTextList.current = configure.lyricsText.split("\n").map((line) => {
@@ -142,14 +216,6 @@ function Player({configure, width, height, ready}) {
         audioPlayer.current.preload = "auto";
         audioPlayer.current.load();
     }
-
-    useEffect(() => {
-        // 判断是否加载成功
-        audioPlayer.current.addEventListener("error", () => {
-            alert("加载音频失败");
-        })
-        audioPlayer.current.addEventListener("ended", audio_ended);
-    }, [])
 
     useEffect(() => {
         if (ready) {
@@ -231,11 +297,25 @@ function Player({configure, width, height, ready}) {
                 {configure.subTitle}
             </div>
 
+            <ProgressBar
+                duration={playerDuration}
+                current={playerCurrent}
+                setCurrent={set_current_time}
+            />
+
+            <div className="time-label">
+                {`${seconds_to_time_string(playerCurrent)} / ${seconds_to_time_string(playerDuration)}`}
+            </div>
+
             {lyricsBlockList}
 
             <button className={isPlaying ? "pause-button" : "play-button"} onClick={() => {
                 if (isPlaying) pause_audio();
                 else play_audio();
+            }} />
+
+            <button className={loopPlaying ? "loop-button on" : "loop-button off"} onClick={() => {
+                setLoopPlaying(!loopPlaying);
             }} />
         </div>
     )

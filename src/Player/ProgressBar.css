@@ -1,0 +1,20 @@
+.progress-bar-container {
+    position: absolute;
+    top:  80%;
+    left: 25%;
+    width: 50vh;
+    height: 8px;
+    transform: translate(-50%, -50%);
+
+    background-color: rgb(128, 128, 128);
+    border-radius: 4px;
+}
+
+.progress-bar-value {
+    position: absolute;
+    top:  0;
+    left: 0;
+    height: 8px;
+    background-color: white;
+    border-radius: 4px;
+}

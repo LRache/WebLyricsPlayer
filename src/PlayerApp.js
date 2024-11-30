@@ -15,7 +15,6 @@ function PlayerApp() {
     const id = params.id;
 
     async function load_lyrics() {
-        console.log(process.env.REACT_APP_API_URL);
         const response = await fetch(`${process.env.REACT_APP_API_URL}/music/lyrics?id=${id}`).catch(() => {
             throw new Error("fetch lyrics failed");
         });

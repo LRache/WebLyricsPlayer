@@ -13,8 +13,8 @@
     background-position-y: 15px;
     background-repeat: no-repeat;
 
-    top:  90%;
-    left: 10px;
+    top:  calc(100% - 100px);
+    left: 20px;
     width:  80px;
     height: 80px;
     border-width: 0;
@@ -22,7 +22,7 @@
 }
 
 .play-button:hover {
-    background-color: rgba(192, 192, 192, 0.9);
+    background-color: rgba(192, 192, 192);
 }
 
 .pause-button {
@@ -34,8 +34,8 @@
     background-position-y: 15px;
     background-repeat: no-repeat;
 
-    top:  90%;
-    left: 10px;
+    top:  calc(100% - 100px);
+    left: 20px;
     width:  80px;
     height: 80px;
     border-width: 0;
@@ -43,11 +43,36 @@
 }
 
 .pause-button:hover {
+    background-color: rgba(192, 192, 192);
+}
+
+.loop-button {
+    position: absolute;
+    background-image: url("/public/loop.svg");
+    background-color: rgba(192, 192, 192, 0.7);
+    background-size: 50px 50px;
+    background-position-x: 15px;
+    background-position-y: 15px;
+    background-repeat: no-repeat;
+
+    top:  calc(100% - 100px);
+    left: 120px;
+    width:  80px;
+    height: 80px;
+    border-width: 0;
+    border-radius: 40px;
+}
+
+.loop-button.on {
     background-color: rgba(192, 192, 192, 0.9);
 }
 
-.pause-button:active {
+.loop-button.off {
     background-color: rgba(192, 192, 192, 0.3);
+}
+
+.loop-button:hover {
+    background-color: rgba(192, 192, 192);
 }
 
 .background-image {
@@ -91,4 +116,13 @@
     height: 50vh;
     width:  50vh;
     transform: translate(-50%, -50%);
+}
+
+.time-label {
+    position: absolute;
+    top: calc(80vh - 5px);
+    left: calc(25vw + 25vh);
+    font-size: 20px;
+    color: white;
+    transform: translate(-100%, -100%)
 }
