@@ -120,7 +120,7 @@
 
 .time-label {
     position: absolute;
-    top: calc(80vh - 5px);
+    top: calc(80vh + 10px);
     left: calc(25vw + 25vh);
     font-size: 20px;
     color: white;

@@ -1,0 +1,78 @@
+.play-list-app {
+}
+
+.play-list-block-list {
+    margin: auto;
+}
+
+.play-list-block {
+    width:  800px;
+    height: 80px;
+    margin: 20px auto;
+    padding: 5px;
+    box-shadow: 0 0 20px black;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.play-list-block-index {
+    margin-left: 10px;
+    line-height: 80px;
+    user-select: none;
+    text-align: center;
+    font-size: 30px;
+}
+
+.play-list-block-img {
+    margin-left: 20px;
+    width:  80px;
+    height: 80px;
+    background-size: 80px;
+}
+
+.play-list-block-img::after {
+    content: "";
+    display: block;
+    padding-top: 100%;
+    background-image: url("/public/play.svg");
+    background-size: 50px;
+    background-position: 15px;
+    background-repeat: no-repeat;
+    background-color: rgba(128, 128, 128, 0.5);
+    opacity: 0;
+}
+
+.play-list-block-img:hover::after {
+    content: "";
+    display: block;
+    padding-top: 100%;
+    background-image: url("/public/play.svg");
+    background-size: 50px;
+    background-position: 15px;
+    background-repeat: no-repeat;
+    background-color: rgba(128, 128, 128, 0.5);
+    opacity: 1;
+}
+
+.play-list-block-title {
+    margin: auto 0 auto 20px;
+    width: 280px;
+    user-select: none;
+    font-size: 24px;
+}
+
+.play-list-block-singer {
+    margin: auto 0 auto 20px;
+    width: 120px;
+    user-select: none;
+    font-size: 20px;
+}
+
+.play-list-block-album {
+    margin: auto 0 auto 20px;
+    width: 200px;
+    user-select: none;
+    font-size: 20px;
+}

@@ -14,7 +14,9 @@ function ProgressBar({duration, current, setCurrent}) {
         progressBar.current.addEventListener("click", progressBarClicked);
 
         return () => {
-            progressBar.current.removeEventListener("click", progressBarClicked);
+            if (progressBar.current) {
+                progressBar.current.removeEventListener("click", progressBarClicked);
+            }
         }
     }, [duration, setCurrent]);
 
